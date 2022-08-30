@@ -1,6 +1,5 @@
-// Формы, использование устаревнего способа без fetch
-
-const forms = document.querySelectorAll('form');
+// Формы, использование устаревнего способа без fetch через json
+/* const forms = document.querySelectorAll('form');
 const message = {
     loading: "icons/spinner.svg",
     success: "Спасибо, мы скоро с вами свяжемя!",
@@ -40,14 +39,13 @@ function postData(form) {
                 showthanksModal(message.success);
                 form.reset(); // очистить инпуты после заполнения и отправки
                 statusMessage.remove();
-                
             } else {
                 showthanksModal(message.failure);
             }
         });
 
     });
-}
+} */
 
 /* // использование форм через форм дату
 const forms = document.querySelectorAll('form');
@@ -72,7 +70,6 @@ function postData(form) {
 
         const request = new XMLHttpRequest();
         request.open('POST', 'server.php');
-        //request.setRequestHeader('Content-type', 'application/json');
         const formData = new FormData(form);
         request.send(formData);
 
@@ -91,7 +88,7 @@ function postData(form) {
     });
 } */
 
-/* // Формы? fetch без json
+/* // Формы fetch без json через форм дату
 
     const forms = document.querySelectorAll('form');
     const message = {
@@ -133,6 +130,55 @@ function postData(form) {
         });
     } */
 
+    /* // Формы fetch через json
+
+    const forms = document.querySelectorAll('form');
+    const message = {
+        loading: "icons/spinner.svg",
+        success: "Спасибо, мы скоро с вами свяжемя!",
+        failure: "Что то пошло не так..."
+    };
+
+    forms.forEach(item => {
+        postData(item);
+    });
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.createElement('img'); // создаем ответ пользователю
+            statusMessage.src = message.loading;
+            statusMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;`; 
+            form.insertAdjacentElement('afterend', statusMessage); // добавляем в конец формы
+
+            const formData = new FormData(form); // всегда прописывать у формы name
+            const object = {}; // переводим формдату в формат json
+            formData.forEach(function(value, key) {
+                object[key] = value;
+            });
+
+            fetch('server.php', {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            }).then(data => data.text())
+            .then(data => {
+                console.log(data);
+                showthanksModal(message.success);
+                statusMessage.remove();
+            }).catch(() => {
+                showthanksModal(message.failure);
+            }).finally(() => {
+                form.reset(); // очистить инпуты после заполнения и отправки
+            });
+        });
+    } */
+
 
 function showthanksModal(message) { // функция замены модального окна
     const prevModalDialog = document.querySelector('.modal__dialog');
@@ -157,3 +203,34 @@ function showthanksModal(message) { // функция замены модаль�
     }, 3000);
 
 }
+
+// КАРТОЧКИ без классов //
+
+const getResource = async (url) => {// функция отвечает за постинг данных, когда они отправляются на сервер
+    const result = await fetch(url); // async await для того чтобы дождаться ответа с сервера, 
+    //await ставим перед тем что нужно дождаться
+    if(!result.ok) { // если запрос не 200(ок) а ошибка
+       throw new Error(`Could not fetch ${url}, status: ${result.status}`); // то выкидываем ошибку 
+    }
+    return await result.json(); // возвращает ответ сервера в json
+};
+
+getResource('http://localhost:3000/menu')
+    .then(data => createCard(data));
+
+    function createCard(data) {
+        data.forEach(({img, altimg, title, descr, price}) => {
+            const element = document.createElement('div');
+            element.classList.add('menu__item');
+            element.innerHTML  = `
+            <img src=${img} alt=${altimg}>
+            <h3 class="menu__item-subtitle">${title}</h3>
+            <div class="menu__item-descr">${descr}</div>
+            <div class="menu__item-divider"></div>
+            <div class="menu__item-price">
+                <div class="menu__item-cost">Цена:</div>
+                <div class="menu__item-total"><span>${price}</span> грн/день</div>
+            </div>`;
+            document.querySelector('.menu .container').append(element);
+        })
+    }
