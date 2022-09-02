@@ -232,5 +232,55 @@ getResource('http://localhost:3000/menu')
                 <div class="menu__item-total"><span>${price}</span> грн/день</div>
             </div>`;
             document.querySelector('.menu .container').append(element);
-        })
+        });
     }
+
+    // простой SLAIDER //
+    const slides = document.querySelectorAll('.offer__slide'),
+          prev = document.querySelector('.offer__slider-prev'),
+          next = document.querySelector('.offer__slider-next'),
+          total = document.querySelector('#total'),
+          current = document.querySelector('#current');
+          let slideIndex = 1;
+
+    showSlide(slideIndex);
+ 
+    if(slideIndex < 10) { // обозначаем общее количество слайдов
+        total.textContent = `0${slides.length}`;
+    } else {
+        total.textContent = slides.length;
+    }
+    
+    function showSlide(n) {
+        if(n > slides.length) { // если n больше количества слайдов, переходим в начало
+            slideIndex = 1;
+        }
+        if(n < 1) { // если n меньше 1 то переходим в конец слайдера
+            slideIndex = slides.length;
+        }
+
+        slides.forEach( item => { // скрываем слайды
+            item.classList.add('hide');
+        });
+        
+        slides[slideIndex - 1].classList.add('show');// показать нужный слайд и его номер
+        slides[slideIndex - 1].classList.remove('hide');
+        
+        if(slides.length < 10) { 
+            current.textContent = `0${slideIndex}`;
+        } else {
+            current.textContent = slideIndex;
+        }
+    }
+
+    function changeSlide(n) {
+        showSlide(slideIndex += n);
+    }
+
+    next.addEventListener('click', () => {
+        changeSlide(1);
+    });
+
+    prev.addEventListener('click', () => {
+        changeSlide(-1);
+    });
