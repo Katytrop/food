@@ -1,4 +1,4 @@
-import {getResource} from '../services/services';
+//import {getResource} from '../services/services';
 
 function cards() {
     // КАРТОЧКИ (используем классы для карточек) //
@@ -11,7 +11,7 @@ function cards() {
             this.price = price;
             this.classes = classes;
             this.parent = document.querySelector(parentSelector);
-            this.transfer = 27; // для пересчета курса
+            this.transfer = 35; // для пересчета курса
             this.changeTOUAH();
         }
 
@@ -36,18 +36,41 @@ function cards() {
                 <div class="menu__item-divider"></div>
                 <div class="menu__item-price">
                     <div class="menu__item-cost">Цена:</div>
-                    <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+                    <div class="menu__item-total"><span>${this.price}</span> руб/день</div>
                 </div>`;
             this.parent.append(element);
         }
     }
 
-    getResource('http://localhost:3000/menu')
+    /* new MenuCard(
+        "img/tabs/vegy.jpg", "vegy", "Меню 'Фитнес'", 
+        "Меню 'Фитнес' - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!",
+        9,
+        '.menu .container'
+        ).render();
+    new MenuCard(
+
+    ).render();
+    new MenuCard(
+
+    ).render(); */
+
+    const getResource = async (url) => {
+        const result = await fetch(url); 
+        return await result.json();
+    };
+    getResource('db.json')
+        .then(res => res.menu.forEach(({img, altimg, title, descr, price}) => { 
+            new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+        }))
+
+    /* getResource('http://localhost:3000/menu')
         .then(data => {
             data.forEach(({img, altimg, title, descr, price}) => { // деструктуризируем обьект по отдельным частям в {} скобках
                 new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
             });
-        });
+        }); */
+        
 }
 
 export default  cards;

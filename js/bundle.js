@@ -128,8 +128,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./js/services/services.js");
-
+//import {getResource} from '../services/services';
 
 function cards() {
     // КАРТОЧКИ (используем классы для карточек) //
@@ -142,7 +141,7 @@ function cards() {
             this.price = price;
             this.classes = classes;
             this.parent = document.querySelector(parentSelector);
-            this.transfer = 27; // для пересчета курса
+            this.transfer = 35; // для пересчета курса
             this.changeTOUAH();
         }
 
@@ -167,18 +166,41 @@ function cards() {
                 <div class="menu__item-divider"></div>
                 <div class="menu__item-price">
                     <div class="menu__item-cost">Цена:</div>
-                    <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+                    <div class="menu__item-total"><span>${this.price}</span> руб/день</div>
                 </div>`;
             this.parent.append(element);
         }
     }
 
-    (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResource)('http://localhost:3000/menu')
+    /* new MenuCard(
+        "img/tabs/vegy.jpg", "vegy", "Меню 'Фитнес'", 
+        "Меню 'Фитнес' - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!",
+        9,
+        '.menu .container'
+        ).render();
+    new MenuCard(
+
+    ).render();
+    new MenuCard(
+
+    ).render(); */
+
+    const getResource = async (url) => {
+        const result = await fetch(url); 
+        return await result.json();
+    };
+    getResource('db.json')
+        .then(res => res.menu.forEach(({img, altimg, title, descr, price}) => { 
+            new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+        }))
+
+    /* getResource('http://localhost:3000/menu')
         .then(data => {
             data.forEach(({img, altimg, title, descr, price}) => { // деструктуризируем обьект по отдельным частям в {} скобках
                 new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
             });
-        });
+        }); */
+        
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (cards);
@@ -586,7 +608,6 @@ function timer(id, deadline) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getResource": () => (/* binding */ getResource),
 /* harmony export */   "postData": () => (/* binding */ postData)
 /* harmony export */ });
 const postData = async (url, data) => {// функция отвечает за постинг данных, когда они отправляются на сервер
@@ -600,17 +621,17 @@ const postData = async (url, data) => {// функция отвечает за �
     return await result.json(); // возвращает ответ сервера в json
 };
 
-const getResource = async (url) => {// функция отвечает за постинг данных, когда они отправляются на сервер
+/* const getResource = async (url) => {// функция отвечает за постинг данных, когда они отправляются на сервер
     const result = await fetch(url); // async await для того чтобы дождаться ответа с сервера, 
     //await ставим перед тем что нужно дождаться
     if(!result.ok) { // если запрос не 200(ок) а ошибка
        throw new Error(`Could not fetch ${url}, status: ${result.status}`); // то выкидываем ошибку 
     }
     return await result.json(); // возвращает ответ сервера в json
-};
+}; */
 
-
-
+ 
+//export {getResource};
 
 /***/ })
 
@@ -700,7 +721,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const modalTimerID = setTimeout(() => (0,_modules_modal__WEBPACK_IMPORTED_MODULE_2__.openModal)('.modal', modalTimerID), 50000);
 
     (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_0__["default"])('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
-    (0,_modules_timer__WEBPACK_IMPORTED_MODULE_1__["default"])('.timer', '2022-10-11');
+    (0,_modules_timer__WEBPACK_IMPORTED_MODULE_1__["default"])('.timer', '2022-12-11');
     (0,_modules_modal__WEBPACK_IMPORTED_MODULE_2__["default"])('[data-modal]', '.modal', modalTimerID);
     (0,_modules_cards__WEBPACK_IMPORTED_MODULE_3__["default"])();
     (0,_modules_forms__WEBPACK_IMPORTED_MODULE_4__["default"])('form', modalTimerID);
